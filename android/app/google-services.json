@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "102246578645",
+    "project_id": "safetire-6375e",
+    "storage_bucket": "safetire-6375e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102246578645:android:87975962b43b14f52da55c",
+        "android_client_info": {
+          "package_name": "com.example.safetireapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3RMIUzSChYxPs2k0c87wmbWA_yrriZbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
