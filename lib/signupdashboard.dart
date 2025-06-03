@@ -230,13 +230,14 @@ class _DashboardSignupState extends State<DashboardSignup> {
               ],
             ),
             const SizedBox(height: 16),
+            // First row - Front Left and Front Right
             Row(
               children: [
                 Expanded(
                   child: _buildTirePressureCard(
                     position: 'Front Left',
                     pressure: 0.0,
-                    status: 'N/A',
+                    status: 'Normal',
                     sensorId: 'FL001',
                     isWarning: false,
                   ),
@@ -246,17 +247,22 @@ class _DashboardSignupState extends State<DashboardSignup> {
                   child: _buildTirePressureCard(
                     position: 'Front Right',
                     pressure: 0.0,
-                    status: 'N/A',
+                    status: 'Warning',
                     sensorId: 'FR001',
-                    isWarning: false,
+                    isWarning: true,
                   ),
                 ),
-                const SizedBox(width: 12),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Second row - Rear Left and Rear Right
+            Row(
+              children: [
                 Expanded(
                   child: _buildTirePressureCard(
                     position: 'Rear Left',
                     pressure: 0.0,
-                    status: 'N/A',
+                    status: 'Normal',
                     sensorId: 'RL001',
                     isWarning: false,
                   ),
@@ -266,7 +272,7 @@ class _DashboardSignupState extends State<DashboardSignup> {
                   child: _buildTirePressureCard(
                     position: 'Rear Right',
                     pressure: 0.0,
-                    status: 'N/A',
+                    status: 'Normal',
                     sensorId: 'RR001',
                     isWarning: false,
                   ),
