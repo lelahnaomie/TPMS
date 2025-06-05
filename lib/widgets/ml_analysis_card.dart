@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 class MLAnalysisCard extends StatelessWidget {
   final bool isBluetoothConnected;
-  final VoidCallback onRefresh;
 
   const MLAnalysisCard({
     Key? key,
     required this.isBluetoothConnected,
-    required this.onRefresh,
   }) : super(key: key);
 
   @override
@@ -132,7 +130,7 @@ class MLAnalysisCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: onRefresh,
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0078D4),
                 padding:

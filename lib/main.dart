@@ -62,7 +62,7 @@ class TireSafeApp extends StatelessWidget {
         ),
       ),
 
-      // Text Button Theme
+      // Text Button
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: primaryColor,
@@ -93,7 +93,7 @@ class TireSafeApp extends StatelessWidget {
     );
   }
 
-  // Route Configuration
+  // Routes Configuration
   Map<String, WidgetBuilder> _buildRoutes() {
     return {
       '/welcome': (context) => const WelcomeScreen(),

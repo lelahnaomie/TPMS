@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Import the separated widgets
 import 'package:safetireapp/widgets/pressure_thresholds_card.dart';
 import 'package:safetireapp/widgets/sensor_readings_card.dart';
 import 'package:safetireapp/widgets/system_monitoring_card.dart';
@@ -9,7 +11,7 @@ import 'package:safetireapp/widgets/historical_data_card.dart';
 import 'package:safetireapp/widgets/ml_analysis_card.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -47,22 +49,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Initialize Bluetooth state
     FlutterBluetoothSerial.instance.state.then((state) {
-      if (mounted) {
-        setState(() {
-          isBluetoothConnected = state == BluetoothState.STATE_ON;
-        });
-      }
+      setState(() {});
     });
 
     // Listen for Bluetooth state changes
     FlutterBluetoothSerial.instance
         .onStateChanged()
         .listen((BluetoothState state) {
-      if (mounted) {
-        setState(() {
-          isBluetoothConnected = state == BluetoothState.STATE_ON;
-        });
-      }
+      setState(() {});
     });
   }
 
@@ -82,16 +76,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
           .get();
 
       if (doc.exists) {
-        Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-        if (data != null && mounted) {
-          setState(() {
-            minPressure = data['min_pressure']?.toDouble() ?? 28.0;
-            maxPressure = data['max_pressure']?.toDouble() ?? 36.0;
-          });
-        }
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        setState(() {
+          minPressure = data['min_pressure']?.toDouble() ?? 28.0;
+          maxPressure = data['max_pressure']?.toDouble() ?? 36.0;
+        });
       }
     } catch (e) {
-      debugPrint('Error loading pressure thresholds: $e');
+      print('Error loading pressure thresholds: $e');
+      // Use default values if loading fails
     }
   }
 
@@ -107,20 +100,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
         'updated_at': FieldValue.serverTimestamp(),
       });
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
           content: Text('Pressure thresholds saved successfully'),
           backgroundColor: Colors.green,
-        ));
-      }
+        ),
+      );
     } catch (e) {
-      debugPrint('Error saving pressure thresholds: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      print('Error saving pressure thresholds: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
           content: Text('Failed to save pressure thresholds'),
           backgroundColor: Colors.red,
-        ));
-      }
+        ),
+      );
     }
   }
 
@@ -171,11 +164,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _savePressureThresholds();
                   Navigator.of(context).pop();
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        'Please enter a valid pressure value between 0 and ${maxPressure.toStringAsFixed(1)} PSI'),
-                    backgroundColor: Colors.red,
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'Please enter a valid pressure value between 0 and ${maxPressure.toStringAsFixed(1)} PSI'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Save'),
@@ -233,11 +228,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _savePressureThresholds();
                   Navigator.of(context).pop();
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(
-                        'Please enter a valid pressure value between ${minPressure.toStringAsFixed(1)} and 100 PSI'),
-                    backgroundColor: Colors.red,
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'Please enter a valid pressure value between ${minPressure.toStringAsFixed(1)} and 100 PSI'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Save'),
@@ -249,6 +246,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _connectToDevice() {
+    // Show a dialog to connect to a Bluetooth device
     showDialog(
       context: context,
       builder: (context) {
@@ -269,10 +267,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 });
                 Navigator.of(context).pop();
 
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('Connected to Arduino TPMS'),
-                  backgroundColor: Colors.green,
-                ));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Connected to Arduino TPMS'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
               },
               child: const Text('Connect'),
             ),
@@ -282,12 +282,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  void _onExportData() {
-    // Implement data export logic here
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('Data export started'),
-      backgroundColor: Colors.blue,
-    ));
+  void _calibrateSensors() {
+    // Handle sensor calibration
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Calibrating sensors...'),
+        backgroundColor: Colors.blue,
+      ),
+    );
+  }
+
+  void _exportData() {
+    // Handle data export
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Exporting data...'),
+        backgroundColor: Colors.blue,
+      ),
+    );
+  }
+
+  // Helper methods to determine pressure status
+  bool _isPressureNormal(double pressure) {
+    return pressure >= minPressure && pressure <= maxPressure;
+  }
+
+  String _getPressureStatus(double pressure) {
+    if (pressure < minPressure) {
+      return 'Low';
+    } else if (pressure > maxPressure) {
+      return 'High';
+    } else {
+      return 'Normal';
+    }
   }
 
   @override
@@ -306,6 +333,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         actions: [
+          // Bluetooth connection indicator and button
           IconButton(
             icon: Icon(
               Icons.bluetooth,
@@ -318,6 +346,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 : 'Connect to Arduino',
           ),
           const SizedBox(width: 10),
+          // Min Pressure Button
+          ElevatedButton(
+            onPressed: _showMinPressureDialog,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0078D4),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Min Pressure'),
+          ),
+          const SizedBox(width: 10),
+          // Max Pressure Button
+          ElevatedButton(
+            onPressed: _showMaxPressureDialog,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0078D4),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Max Pressure'),
+          ),
+          const SizedBox(width: 16),
         ],
       ),
       body: SingleChildScrollView(
@@ -331,73 +379,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
               maxPressure: maxPressure,
             ),
             const SizedBox(height: 16),
-
-            // Sensor Readings Card
             SensorReadingsCard(
               isBluetoothConnected: isBluetoothConnected,
+              getPressureStatus: _getPressureStatus,
+              isPressureNormal: _isPressureNormal,
               minPressure: minPressure,
               maxPressure: maxPressure,
             ),
             const SizedBox(height: 16),
-
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 1,
                   child: SystemMonitoringCard(
+                    pressureData: pressureData,
                     minPressure: minPressure,
                     maxPressure: maxPressure,
-                    pressureData: pressureData,
-                    onSetMinPressure: _showMinPressureDialog,
-                    onSetMaxPressure: _showMaxPressureDialog,
+                    onCalibrateSensors: _calibrateSensors,
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   flex: 1,
                   child: HistoricalDataCard(
-                    minPressure: minPressure,
-                    maxPressure: maxPressure,
-                    onExportData: _onExportData,
+                    getPressureStatus: _getPressureStatus,
+                    isPressureNormal: _isPressureNormal,
+                    onExportData: _exportData,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-
-            // Set pressure buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: _showMinPressureDialog,
-                  child: const Text('Set Min Pressure'),
-                ),
-                ElevatedButton(
-                  onPressed: _showMaxPressureDialog,
-                  child: const Text('Set Max Pressure'),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // ML Analysis Card
             MLAnalysisCard(
               isBluetoothConnected: isBluetoothConnected,
-              onRefresh: _onRefreshMLAnalysis,
             ),
           ],
         ),
       ),
     );
-  }
-
-  void _onRefreshMLAnalysis() {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('ML Analysis refreshed'),
-      backgroundColor: Colors.blue,
-    ));
   }
 }
